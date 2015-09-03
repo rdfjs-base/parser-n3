@@ -1,0 +1,35 @@
+{
+  "name": "rdf-parser-n3",
+  "version": "0.1.0",
+  "description": "N3 parser that follows the RDF Interface specification",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rdf-ext/rdf-parser-n3.git"
+  },
+  "keywords": [
+    "rdf-parser",
+    "rdf",
+    "linked",
+    "data"
+  ],
+  "author": "Thomas Bergwinkl <bergi@axolotlfarm.org> (https://www.bergnet.org/people/bergi/card#me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rdf-ext/rdf-parser-n3/issues"
+  },
+  "homepage": "https://github.com/rdf-ext/rdf-parser-n3",
+  "dependencies": {
+    "n3": "^0.4.3",
+    "rdf-parser-abstract": "^0.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "rdf-ext": "^0.3.0",
+    "rdf-test-data": "^0.1.0",
+    "rdf-test-utils": "^0.2.0"
+  }
+}

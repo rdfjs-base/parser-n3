@@ -1,0 +1,4 @@
+[] <http://example.org/orderedItems> (
+	[ <http://example.org/text> "1" ]
+	[ <http://example.org/text> "2" ]
+).
