@@ -4,7 +4,7 @@ var assert = require('assert')
 var rdf = require('rdf-ext')()
 var testData = require('rdf-test-data')(rdf)
 var testUtils = require('rdf-test-utils')(rdf)
-var N3Parser = require('../').bind(null, rdf)
+var N3Parser = require('../')
 
 describe('N3 parser', function () {
   describe('process API', function () {

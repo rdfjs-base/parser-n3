@@ -1,8 +1,9 @@
+var rdf = require('rdf-ext')()
 var util = require('util')
 var AbstractParser = require('rdf-parser-abstract')
 var N3 = require('n3')
 
-function N3Parser (rdf, options) {
+function N3Parser (options) {
   AbstractParser.call(this, rdf)
 
   this.options = options || {}
@@ -88,6 +89,13 @@ N3Parser.prototype.process = function (data, callback, base, filter, done) {
       pushTriple(n3Triple)
     })
   })
+}
+
+// add singleton methods to class
+var instance = new N3Parser()
+
+for (var property in instance) {
+  N3Parser[property] = instance[property]
 }
 
 module.exports = N3Parser
