@@ -1,4 +1,4 @@
-var rdf = require('rdf-ext')()
+var rdf = require('rdf-ext')
 var util = require('util')
 var AbstractParser = require('rdf-parser-abstract')
 var N3 = require('n3')
