@@ -29,7 +29,7 @@ describe('N3 parser', function () {
       var counter = 0
 
       parser.process('<subject> <http://example.org/predicate> "object".', function (triple) {
-        if (triple.subject.toString() === 'http://example.org/subject') {
+        if (triple.subject.equals('http://example.org/subject')) {
           counter++
         }
       }, 'http://example.org/').then(function () {
