@@ -168,11 +168,11 @@ describe('N3 parser', function () {
     it('card.json should be parsed', function (done) {
       var parser = new N3Parser()
 
-      testUtils.p.readFile('support/card.ttl', __dirname).then(function (card) {
+      testUtils.readFile('support/card.ttl', __dirname).then(function (card) {
         return parser.parse(card, null, 'https://www.example.com/john/card')
       }).then(function (graph) {
-        return testUtils.p.assertGraphEqual(graph, testData.cardGraph)
-      }).then(function () {
+        assert(testData.cardGraph.equals(graph))
+
         done()
       }).catch(function (error) {
         done(error)
@@ -190,7 +190,7 @@ describe('N3 parser', function () {
         delete rdf.prefixes.foaf
       }
 
-      testUtils.p.readFile('support/card.ttl', __dirname).then(function (card) {
+      testUtils.readFile('support/card.ttl', __dirname).then(function (card) {
         return parser.parse(card, null, 'https://www.example.com/john/card')
       }).then(function () {
         assert.equal(rdf.prefixes.cert, 'http://www.w3.org/ns/auth/cert#')
@@ -205,11 +205,11 @@ describe('N3 parser', function () {
     it('list.json should be parsed', function (done) {
       var parser = new N3Parser()
 
-      testUtils.p.readFile('support/list.ttl', __dirname).then(function (list) {
+      testUtils.readFile('support/list.ttl', __dirname).then(function (list) {
         return parser.parse(list, null, 'https://www.example.com/list')
       }).then(function (graph) {
-        return testUtils.p.assertGraphEqual(graph, testData.listGraph)
-      }).then(function () {
+        assert(testData.listGraph.equals(graph))
+
         done()
       }).catch(function (error) {
         done(error)
