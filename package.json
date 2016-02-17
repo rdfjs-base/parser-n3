@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/rdf-ext/rdf-parser-n3",
   "dependencies": {
+    "inherits": "^2.0.1",
     "n3": "^0.4.5",
     "rdf-ext": "^0.3.0",
     "rdf-parser-abstract": "^0.3.0"
