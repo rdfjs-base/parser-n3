@@ -1,5 +1,5 @@
 var rdf = require('rdf-ext')
-var util = require('util')
+var inherits = require('inherits')
 var AbstractParser = require('rdf-parser-abstract')
 var N3 = require('n3')
 
@@ -13,7 +13,7 @@ function N3Parser (options) {
   }
 }
 
-util.inherits(N3Parser, AbstractParser)
+inherits(N3Parser, AbstractParser)
 
 N3Parser.prototype.process = function (data, callback, base, filter, done) {
   var self = this
