@@ -1,156 +1,35 @@
 /* global describe, it */
-var assert = require('assert')
-var rdf = require('rdf-ext')
-var testData = require('rdf-test-data')
-var testUtils = require('rdf-test-utils')
-var N3Parser = require('../')
 
-describe('N3 parser', function () {
-  describe('process API', function () {
-    it('should be supported', function (done) {
-      var parser = new N3Parser()
-      var counter = 0
+const assert = require('assert')
+const fs = require('fs')
+const rdf = require('rdf-ext')
+const stringToStream = require('string-to-stream')
+const testData = require('rdf-test-data')
+const N3Parser = require('..')
 
-      parser.process('<http://example.org/subject> <http://example.org/predicate> "object".', function () {
-        counter++
-      }).then(function () {
-        if (counter !== 1) {
-          done('no triple processed')
-        } else {
-          done()
-        }
-      }).catch(function (error) {
-        done(error)
-      })
-    })
-
-    it('should use base parameter', function (done) {
-      var parser = new N3Parser()
-      var counter = 0
-
-      parser.process('<subject> <http://example.org/predicate> "object".', function (triple) {
-        if (triple.subject.equals('http://example.org/subject')) {
-          counter++
-        }
-      }, 'http://example.org/').then(function () {
-        if (counter !== 1) {
-          done('no triple processed')
-        } else {
-          done()
-        }
-      }).catch(function (error) {
-        done(error)
-      })
-    })
-
-    it('should use filter parameter', function (done) {
-      var parser = new N3Parser()
-      var counter = 1
-
-      parser.process('<http://example.org/subject> <http://example.org/predicate> "object".', function () {
-        counter *= 2
-      }, null, function () {
-        counter *= 3
-
-        return false
-      }).then(function () {
-        if (counter !== 3) {
-          done('no triple processed')
-        } else {
-          done()
-        }
-      }).catch(function (error) {
-        done(error)
-      })
-    })
-
-    it('should use done parameter', function (done) {
-      var parser = new N3Parser()
-      var counter = 0
-
-      Promise.resolve(new Promise(function (resolve) {
-        parser.process('<http://example.org/subject> <http://example.org/predicate> "object".', function () {
-          counter++
-        }, null, null, function () {
-          resolve()
-        })
-      })).then(function () {
-        if (counter !== 1) {
-          done('no triple processed')
-        } else {
-          done()
-        }
-      })
-      .catch(function (error) {
-        done(error)
-      })
-    })
-  })
-
-  describe('callback API', function () {
-    it('should be supported', function (done) {
-      var parser = new N3Parser()
-
-      Promise.resolve(new Promise(function (resolve) {
-        parser.parse('', function () {
-          resolve()
-        })
-      })).then(function () {
-        done()
-      })
-      .catch(function (error) {
-        done(error)
-      })
-    })
-
-    it('should forward errors', function (done) {
-      var parser = new N3Parser()
-
-      Promise.resolve(new Promise(function (resolve, reject) {
-        parser.parse('<test>.', function (error) {
-          if (error) {
-            reject(error)
-          } else {
-            resolve()
-          }
-        })
-      })).then(function () {
-        done('no error thrown')
-      }).catch(function () {
-        done()
-      })
-    })
-  })
-
-  describe('Promise API', function () {
-    it('should be supported', function (done) {
-      var parser = new N3Parser()
-
-      parser.parse('').then(function () {
-        done()
-      })
-      .catch(function (error) {
-        done(error)
-      })
-    })
-
-    it('should forward error to Promise API', function (done) {
-      var parser = new N3Parser()
-
-      parser.parse('<test>.').then(function () {
-        done('no error thrown')
-      }).catch(function () {
-        done()
-      })
-    })
-  })
-
+describe('N3 parser', () => {
   describe('Stream API', function () {
-    it('should be supported', function (done) {
-      var parser = new N3Parser()
-      var counter = 0
+    it('instance .read should be supported', function (done) {
+      let parser = new N3Parser()
+      let counter = 0
 
-      parser.stream('<http://example.org/subject> <http://example.org/predicate> "object".').on('data', function () {
+      parser.read(stringToStream('<http://example.org/subject> <http://example.org/predicate> "object".')).on('data', function () {
+        counter++
+      }).on('end', function () {
+        if (counter !== 1) {
+          done('no triple streamed')
+        } else {
+          done()
+        }
+      }).on('error', function (error) {
+        done(error)
+      })
+    })
+
+    it('static .read should be supported', function (done) {
+      let counter = 0
+
+      N3Parser.read(stringToStream('<http://example.org/subject> <http://example.org/predicate> "object".')).on('data', function () {
         counter++
       }).on('end', function () {
         if (counter !== 1) {
@@ -164,55 +43,24 @@ describe('N3 parser', function () {
     })
   })
 
-  describe('example data', function () {
-    it('card.json should be parsed', function (done) {
-      var parser = new N3Parser()
+  describe('example data', () => {
+    it('card.ttl should be parsed', () => {
+      let parser = new N3Parser({baseIRI: 'https://www.example.com/john/card'})
 
-      testUtils.readFile('support/card.ttl', __dirname).then(function (card) {
-        return parser.parse(card, null, 'https://www.example.com/john/card')
-      }).then(function (graph) {
-        assert(testData.cardGraph.equals(graph))
-
-        done()
-      }).catch(function (error) {
-        done(error)
+      return testData.stream('text/turtle', 'card').then((stream) => {
+        return rdf.dataset().import(parser.read(stream)).then((parsed) => {
+          assert(testData.card.equals(parsed))
+        })
       })
     })
 
-    it('card.json should feed prefix map', function (done) {
-      var parser = new N3Parser()
+    it('list.ttl should be parsed', () => {
+      let parser = new N3Parser({baseIRI: 'https://www.example.com/list'})
 
-      if (rdf.prefixes.cert) {
-        delete rdf.prefixes.cert
-      }
-
-      if (rdf.prefixes.foaf) {
-        delete rdf.prefixes.foaf
-      }
-
-      testUtils.readFile('support/card.ttl', __dirname).then(function (card) {
-        return parser.parse(card, null, 'https://www.example.com/john/card')
-      }).then(function () {
-        assert.equal(rdf.prefixes.cert, 'http://www.w3.org/ns/auth/cert#')
-        assert.equal(rdf.prefixes.foaf, 'http://xmlns.com/foaf/0.1/')
-      }).then(function () {
-        done()
-      }).catch(function (error) {
-        done(error)
-      })
-    })
-
-    it('list.json should be parsed', function (done) {
-      var parser = new N3Parser()
-
-      testUtils.readFile('support/list.ttl', __dirname).then(function (list) {
-        return parser.parse(list, null, 'https://www.example.com/list')
-      }).then(function (graph) {
-        assert(testData.listGraph.equals(graph))
-
-        done()
-      }).catch(function (error) {
-        done(error)
+      return testData.stream('text/turtle', 'list').then((stream) => {
+        return rdf.dataset().import(parser.read(stream)).then(function (dataset) {
+          assert(testData.list.equals(dataset))
+        })
       })
     })
   })
