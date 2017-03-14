@@ -1,7 +1,6 @@
 /* global describe, it */
 
 const assert = require('assert')
-const fs = require('fs')
 const rdf = require('rdf-ext')
 const stringToStream = require('string-to-stream')
 const testData = require('rdf-test-data')
