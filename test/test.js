@@ -7,38 +7,48 @@ const testData = require('rdf-test-data')
 const N3Parser = require('..')
 
 describe('N3 parser', () => {
-  describe('Stream API', function () {
-    it('instance .import should be supported', function (done) {
-      let parser = new N3Parser()
-      let counter = 0
+  const simpleNTGraph = '<http://example.org/subject> <http://example.org/predicate> "object".'
 
-      parser.import(stringToStream('<http://example.org/subject> <http://example.org/predicate> "object".')).on('data', function () {
-        counter++
-      }).on('end', function () {
-        if (counter !== 1) {
-          done('no triple streamed')
-        } else {
-          done()
-        }
-      }).on('error', function (error) {
-        done(error)
-      })
+  it('.import should parse the given string stream', (done) => {
+    let parser = new N3Parser()
+    let counter = 0
+
+    parser.import(stringToStream(simpleNTGraph)).on('data', () => {
+      counter++
+    }).on('end', () => {
+      if (counter !== 1) {
+        done('no triple streamed')
+      } else {
+        done()
+      }
+    }).on('error', (error) => {
+      done(error)
     })
+  })
 
-    it('static .import should be supported', function (done) {
-      let counter = 0
+  it('.import should handle parser errors', (done) => {
+    let parser = new N3Parser()
 
-      N3Parser.import(stringToStream('<http://example.org/subject> <http://example.org/predicate> "object".')).on('data', function () {
-        counter++
-      }).on('end', function () {
-        if (counter !== 1) {
-          done('no triple streamed')
-        } else {
-          done()
-        }
-      }).on('error', function (error) {
-        done(error)
-      })
+    parser.import(stringToStream('1.')).resume().on('end', () => {
+      done('end event emitted')
+    }).on('error', (error) => {
+      done()
+    })
+  })
+
+  it('static .import parse the given string stream', (done) => {
+    let counter = 0
+
+    N3Parser.import(stringToStream(simpleNTGraph)).on('data', () => {
+      counter++
+    }).on('end', () => {
+      if (counter !== 1) {
+        done('no triple streamed')
+      } else {
+        done()
+      }
+    }).on('error', (error) => {
+      done(error)
     })
   })
 
@@ -57,7 +67,7 @@ describe('N3 parser', () => {
       let parser = new N3Parser({baseIRI: 'https://www.example.com/list'})
 
       return testData.stream('text/turtle', 'list').then((stream) => {
-        return rdf.dataset().import(parser.import(stream)).then(function (dataset) {
+        return rdf.dataset().import(parser.import(stream)).then((dataset) => {
           assert(testData.list.equals(dataset))
         })
       })
