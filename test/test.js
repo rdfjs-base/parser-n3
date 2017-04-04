@@ -32,6 +32,8 @@ describe('N3 parser', () => {
     parser.import(stringToStream('1.')).resume().on('end', () => {
       done('end event emitted')
     }).on('error', (error) => {
+      assert(error)
+
       done()
     })
   })
