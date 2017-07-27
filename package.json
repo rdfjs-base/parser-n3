@@ -1,6 +1,6 @@
 {
   "name": "rdf-parser-n3",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "N3 parser that follows the RDF Interface specification",
   "main": "index.js",
   "scripts": {
