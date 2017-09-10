@@ -8,8 +8,9 @@ const N3Parser = require('..')
 
 describe('N3 parser', () => {
   const simpleNTGraph = '<http://example.org/subject> <http://example.org/predicate> "object".'
+  const simpleNQGraph = '<http://example.org/subject> <http://example.org/predicate> "object" <http://example.org/graph>.'
 
-  it('.import should parse the given string stream', (done) => {
+  it('.import should parse the given string triple stream', (done) => {
     let parser = new N3Parser()
     let counter = 0
 
@@ -18,6 +19,23 @@ describe('N3 parser', () => {
     }).on('end', () => {
       if (counter !== 1) {
         done('no triple streamed')
+      } else {
+        done()
+      }
+    }).on('error', (error) => {
+      done(error)
+    })
+  })
+
+  it('.import should parse the given string quad stream', (done) => {
+    let parser = new N3Parser()
+    let counter = 0
+
+    parser.import(stringToStream(simpleNQGraph)).on('data', () => {
+      counter++
+    }).on('end', () => {
+      if (counter !== 1) {
+        done('no quad streamed')
       } else {
         done()
       }
