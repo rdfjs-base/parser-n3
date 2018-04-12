@@ -49,7 +49,7 @@ describe('N3 parser', () => {
   })
 
   it('.import should handle parser errors', (done) => {
-    let parser = new N3Parser()
+    const parser = new N3Parser()
 
     parser.import(stringToStream('1.')).resume().on('end', () => {
       done('end event emitted')
@@ -78,21 +78,21 @@ describe('N3 parser', () => {
 
   describe('example data', () => {
     it('card.ttl should be parsed', () => {
-      let parser = new N3Parser({baseIRI: 'https://www.example.com/john/card'})
+      const parser = new N3Parser({baseIRI: 'https://www.example.com/john/card', factory: rdf})
 
       return testData.stream('text/turtle', 'card').then((stream) => {
-        return rdf.dataset().import(parser.import(stream)).then((parsed) => {
-          assert(testData.card.equals(parsed))
+        return rdf.dataset().import(parser.import(stream)).then((dataset) => {
+          assert.equal(dataset.toCanonical(), testData.card.toCanonical())
         })
       })
     })
 
     it('list.ttl should be parsed', () => {
-      let parser = new N3Parser({baseIRI: 'https://www.example.com/list'})
+      const parser = new N3Parser({baseIRI: 'https://www.example.com/list', factory: rdf})
 
       return testData.stream('text/turtle', 'list').then((stream) => {
         return rdf.dataset().import(parser.import(stream)).then((dataset) => {
-          assert(testData.list.equals(dataset))
+          assert.equal(dataset.toCanonical(), testData.list.toCanonical())
         })
       })
     })
