@@ -1,41 +1,41 @@
 {
-  "name": "rdf-parser-n3",
+  "name": "@rdfjs/parser-n3",
   "version": "1.1.1",
-  "description": "N3 parser that follows the RDF Interface specification",
+  "description": "N3 parser that implements the RDFJS Sink interface",
   "main": "index.js",
   "scripts": {
-    "test": "standard && mocha",
-    "test-browser": "build-browser-test"
+    "test": "standard && mocha"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rdf-ext/rdf-parser-n3.git"
+    "url": "https://github.com/rdfjs/parser-n3.git"
   },
   "keywords": [
     "rdf",
     "rdfjs",
-    "rdf-ext",
     "parser",
     "n3",
-    "ntriples"
+    "ntriples",
+    "turtle"
   ],
   "author": "Thomas Bergwinkl <bergi@axolotlfarm.org> (https://www.bergnet.org/people/bergi/card#me)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rdf-ext/rdf-parser-n3/issues"
+    "url": "https://github.com/rdfjs/parser-n3/issues"
   },
-  "homepage": "https://github.com/rdf-ext/rdf-parser-n3",
+  "homepage": "https://github.com/rdfjs/parser-n3",
   "dependencies": {
-    "n3": "git://github.com/RubenVerborgh/N3.js.git#develop",
-    "rdf-data-model": "^1.0.0",
-    "rdf-sink": "^1.0.0",
-    "readable-stream": "^2.2.9"
+    "@rdfjs/data-model": "^1.0.1",
+    "@rdfjs/sink": "^1.0.2",
+    "n3": "^1.0.0-beta.1",
+    "readable-stream": "^2.3.6"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
-    "rdf-ext": "^1.0.0",
-    "rdf-test-data": "^1.0.0",
-    "standard": "^9.0.1",
-    "string-to-stream": "^1.1.0"
+    "mocha": "^5.2.0",
+    "standard": "^11.0.1",
+    "string-to-stream": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=6"
   }
 }

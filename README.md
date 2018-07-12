@@ -1,6 +1,7 @@
-# rdf-parser-n3
+# @rdfjs/parser-n3
 
-[![Build Status](https://travis-ci.org/rdf-ext/rdf-parser-n3.svg?branch=master)](https://travis-ci.org/rdf-ext/rdf-parser-n3)
-[![npm version](https://badge.fury.io/js/rdf-parser-n3.svg)](https://badge.fury.io/js/rdf-parser-n3)
+[![Build Status](https://travis-ci.org/rdfjs/parser-n3.svg?branch=master)](https://travis-ci.org/rdfjs/parser-n3)
 
-N3 parser which implements the [RDFJS Sink interface](https://github.com/rdfjs/representation-task-force/) using the [N3.js](https://github.com/RubenVerborgh/N3.js) library.
+[![npm version](https://img.shields.io/npm/v/@rdfjs/parser-n3.svg)](https://www.npmjs.com/package/@rdfjs/parser-n3)
+
+N3 parser which implements the [RDFJS Sink interface](http://rdf.js.org/) using the [N3.js](https://github.com/rdfjs/N3.js) library.

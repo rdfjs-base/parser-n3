@@ -1,100 +1,106 @@
 /* global describe, it */
 
 const assert = require('assert')
-const rdf = require('rdf-ext')
+const sinkTest = require('@rdfjs/sink/test')
 const stringToStream = require('string-to-stream')
-const testData = require('rdf-test-data')
 const N3Parser = require('..')
 
-describe('N3 parser', () => {
-  const simpleNTGraph = '<http://example.org/subject> <http://example.org/predicate> "object" .'
-  const simpleNQGraph = '<http://example.org/subject> <http://example.org/predicate> "object" <http://example.org/graph> .'
-
-  it('.import should parse the given string triple stream', (done) => {
-    const parser = new N3Parser({factory: rdf})
-    const quads = []
-
-    parser.import(stringToStream(simpleNTGraph)).on('data', (quad) => {
-      quads.push(quad)
-    }).on('end', () => {
-      if (quads.length !== 1) {
-        done('no triple streamed')
-      } else {
-        assert.equal(quads[0].toString(), simpleNTGraph)
-
-        done()
-      }
-    }).on('error', (error) => {
-      done(error)
-    })
+function waitFor (stream) {
+  return new Promise((resolve, reject) => {
+    stream.on('end', resolve)
+    stream.on('error', reject)
   })
+}
 
-  it('.import should parse the given string quad stream', (done) => {
-    const parser = new N3Parser({factory: rdf})
-    const quads = []
+describe('@rdfjs/parser-n3', () => {
+  sinkTest(N3Parser, {readable: true})
 
-    parser.import(stringToStream(simpleNQGraph)).on('data', (quad) => {
-      quads.push(quad)
-    }).on('end', () => {
-      if (quads.length !== 1) {
-        done('no quad streamed')
-      } else {
-        assert.equal(quads[0].toString(), simpleNQGraph)
-
-        done()
-      }
-    }).on('error', (error) => {
-      done(error)
-    })
-  })
-
-  it('.import should handle parser errors', (done) => {
+  it('.import should parse the given string triple stream', () => {
+    const nt = '<http://example.org/subject> <http://example.org/predicate> "object" .'
     const parser = new N3Parser()
 
-    parser.import(stringToStream('1.')).resume().on('end', () => {
-      done('end event emitted')
-    }).on('error', (error) => {
-      assert(error)
+    const stream = parser.import(stringToStream(nt))
 
-      done()
+    return Promise.resolve().then(() => {
+      const quad = stream.read()
+
+      assert.equal(quad.subject.termType, 'NamedNode')
+      assert.equal(quad.subject.value, 'http://example.org/subject')
+
+      assert.equal(quad.predicate.termType, 'NamedNode')
+      assert.equal(quad.predicate.value, 'http://example.org/predicate')
+
+      assert.equal(quad.object.termType, 'Literal')
+      assert.equal(quad.object.value, 'object')
+
+      assert.equal(quad.graph.termType, 'DefaultGraph')
+
+      return waitFor(stream)
     })
   })
 
-  it('static .import parse the given string stream', (done) => {
-    let counter = 0
+  it('.import should parse the given string quad stream', () => {
+    const nt = '<http://example.org/subject> <http://example.org/predicate> "object" <http://example.org/graph> .'
+    const parser = new N3Parser()
 
-    N3Parser.import(stringToStream(simpleNTGraph)).on('data', () => {
-      counter++
-    }).on('end', () => {
-      if (counter !== 1) {
-        done('no triple streamed')
-      } else {
-        done()
-      }
-    }).on('error', (error) => {
-      done(error)
+    const stream = parser.import(stringToStream(nt))
+
+    return Promise.resolve().then(() => {
+      const quad = stream.read()
+
+      assert.equal(quad.subject.termType, 'NamedNode')
+      assert.equal(quad.subject.value, 'http://example.org/subject')
+
+      assert.equal(quad.predicate.termType, 'NamedNode')
+      assert.equal(quad.predicate.value, 'http://example.org/predicate')
+
+      assert.equal(quad.object.termType, 'Literal')
+      assert.equal(quad.object.value, 'object')
+
+      assert.equal(quad.graph.termType, 'NamedNode')
+      assert.equal(quad.graph.value, 'http://example.org/graph')
+
+      return waitFor(stream)
     })
   })
 
-  describe('example data', () => {
-    it('card.ttl should be parsed', () => {
-      const parser = new N3Parser({baseIRI: 'https://www.example.com/john/card', factory: rdf})
+  it('.import should emit prefix events for each prefix', () => {
+    const prefix1 = 'http://example.org/prefix1#'
+    const prefix2 = 'http://example.org/prefix2#'
 
-      return testData.stream('text/turtle', 'card').then((stream) => {
-        return rdf.dataset().import(parser.import(stream)).then((dataset) => {
-          assert.equal(dataset.toCanonical(), testData.card.toCanonical())
-        })
-      })
+    const nt = `PREFIX p1: <${prefix1}>
+      PREFIX p2: <${prefix2}>
+      <http://example.org/subject> <http://example.org/predicate> "object" .`
+    const parser = new N3Parser()
+    const prefixes = {}
+
+    const stream = parser.import(stringToStream(nt))
+
+    stream.on('prefix', (prefix, namespace) => {
+      prefixes[prefix] = namespace
     })
 
-    it('list.ttl should be parsed', () => {
-      const parser = new N3Parser({baseIRI: 'https://www.example.com/list', factory: rdf})
+    stream.resume()
 
-      return testData.stream('text/turtle', 'list').then((stream) => {
-        return rdf.dataset().import(parser.import(stream)).then((dataset) => {
-          assert.equal(dataset.toCanonical(), testData.list.toCanonical())
-        })
-      })
+    return waitFor(stream).then(() => {
+      assert(prefixes.p1)
+      assert.equal(prefixes.p1.termType, 'NamedNode')
+      assert.equal(prefixes.p1.value, prefix1)
+
+      assert(prefixes.p2)
+      assert.equal(prefixes.p2.termType, 'NamedNode')
+      assert.equal(prefixes.p2.value, prefix2)
+    })
+  })
+
+  it('.import should handle parser errors', () => {
+    const nt = '1'
+    const parser = new N3Parser()
+
+    const stream = parser.import(stringToStream(nt))
+
+    return new Promise((resolve, reject) => {
+      return waitFor(stream).catch(resolve).then(reject)
     })
   })
 })
