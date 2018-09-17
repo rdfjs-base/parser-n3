@@ -28,7 +28,7 @@ The options from the constructor and the `.import` method will be merged togethe
 This example shows how to create a parser instance and how to feed it with a stream from a string.
 The parsed quads and the prefixes are written to the console.
 
-```
+```javascript
 const ParserN3 = require('@rdfjs/parser-n3')
 const Readable = require('stream').Readable
 
