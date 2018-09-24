@@ -14,7 +14,7 @@ It expects a Turtle, N-Triples or N-Quads string stream.
 The method will return a stream which emits the parsed quads.
 It also emits `prefix` events as defined in the [RDFJS specification](http://rdf.js.org/#dom-stream-prefix).
 
-The constructor accepts the following options:
+The constructor accepts an `options` object with the following optional keys:
 
 - `baseIRI`: Allows passing the base IRI manually to the `N3.js` library.
 - `factory`: Use an alternative RDFJS data factory.
