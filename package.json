@@ -34,8 +34,5 @@
     "mocha": "^7.1.1",
     "standard": "^14.3.3",
     "string-to-stream": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=6"
   }
 }
