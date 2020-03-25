@@ -13,7 +13,7 @@ function waitFor (stream) {
 }
 
 describe('@rdfjs/parser-n3', () => {
-  sinkTest(N3Parser, {readable: true})
+  sinkTest(N3Parser, { readable: true })
 
   it('.import should parse the given string triple stream', () => {
     const nt = '<http://example.org/subject> <http://example.org/predicate> "object" .'
@@ -24,16 +24,16 @@ describe('@rdfjs/parser-n3', () => {
     return Promise.resolve().then(() => {
       const quad = stream.read()
 
-      assert.equal(quad.subject.termType, 'NamedNode')
-      assert.equal(quad.subject.value, 'http://example.org/subject')
+      assert.strictEqual(quad.subject.termType, 'NamedNode')
+      assert.strictEqual(quad.subject.value, 'http://example.org/subject')
 
-      assert.equal(quad.predicate.termType, 'NamedNode')
-      assert.equal(quad.predicate.value, 'http://example.org/predicate')
+      assert.strictEqual(quad.predicate.termType, 'NamedNode')
+      assert.strictEqual(quad.predicate.value, 'http://example.org/predicate')
 
-      assert.equal(quad.object.termType, 'Literal')
-      assert.equal(quad.object.value, 'object')
+      assert.strictEqual(quad.object.termType, 'Literal')
+      assert.strictEqual(quad.object.value, 'object')
 
-      assert.equal(quad.graph.termType, 'DefaultGraph')
+      assert.strictEqual(quad.graph.termType, 'DefaultGraph')
 
       return waitFor(stream)
     })
@@ -48,17 +48,17 @@ describe('@rdfjs/parser-n3', () => {
     return Promise.resolve().then(() => {
       const quad = stream.read()
 
-      assert.equal(quad.subject.termType, 'NamedNode')
-      assert.equal(quad.subject.value, 'http://example.org/subject')
+      assert.strictEqual(quad.subject.termType, 'NamedNode')
+      assert.strictEqual(quad.subject.value, 'http://example.org/subject')
 
-      assert.equal(quad.predicate.termType, 'NamedNode')
-      assert.equal(quad.predicate.value, 'http://example.org/predicate')
+      assert.strictEqual(quad.predicate.termType, 'NamedNode')
+      assert.strictEqual(quad.predicate.value, 'http://example.org/predicate')
 
-      assert.equal(quad.object.termType, 'Literal')
-      assert.equal(quad.object.value, 'object')
+      assert.strictEqual(quad.object.termType, 'Literal')
+      assert.strictEqual(quad.object.value, 'object')
 
-      assert.equal(quad.graph.termType, 'NamedNode')
-      assert.equal(quad.graph.value, 'http://example.org/graph')
+      assert.strictEqual(quad.graph.termType, 'NamedNode')
+      assert.strictEqual(quad.graph.value, 'http://example.org/graph')
 
       return waitFor(stream)
     })
@@ -84,12 +84,12 @@ describe('@rdfjs/parser-n3', () => {
 
     return waitFor(stream).then(() => {
       assert(prefixes.p1)
-      assert.equal(prefixes.p1.termType, 'NamedNode')
-      assert.equal(prefixes.p1.value, prefix1)
+      assert.strictEqual(prefixes.p1.termType, 'NamedNode')
+      assert.strictEqual(prefixes.p1.value, prefix1)
 
       assert(prefixes.p2)
-      assert.equal(prefixes.p2.termType, 'NamedNode')
-      assert.equal(prefixes.p2.value, prefix2)
+      assert.strictEqual(prefixes.p2.termType, 'NamedNode')
+      assert.strictEqual(prefixes.p2.value, prefix2)
     })
   })
 
