@@ -1,6 +1,6 @@
 # @rdfjs/parser-n3
 
-[![Build Status](https://travis-ci.org/rdfjs/parser-n3.svg?branch=master)](https://travis-ci.org/rdfjs/parser-n3)
+[![Build Status](https://travis-ci.org/rdfjs-base/parser-n3.svg?branch=master)](https://travis-ci.org/rdfjs-base/parser-n3)
 
 [![npm version](https://img.shields.io/npm/v/@rdfjs/parser-n3.svg)](https://www.npmjs.com/package/@rdfjs/parser-n3)
 
