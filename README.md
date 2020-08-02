@@ -10,7 +10,7 @@ N3 parser which implements the [RDFJS Sink interface](http://rdf.js.org/) using 
 
 The package exports the parser as a class, so an instance must be created before it can be used.
 The `.import` method, as defined in the [RDFJS specification](http://rdf.js.org/#sink-interface), must be called to do the actual parsing.
-It expects a Turtle, N-Triples or N-Quads string stream.
+It expects a Turtle, Trig, N-Triples or N-Quads string stream.
 The method will return a stream which emits the parsed quads.
 It also emits `prefix` events as defined in the [RDFJS specification](http://rdf.js.org/#dom-stream-prefix).
 
