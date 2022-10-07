@@ -1,25 +1,24 @@
-const { strictEqual } = require('assert')
-const getStream = require('get-stream')
-const { describe, it } = require('mocha')
-const sinkTest = require('@rdfjs/sink/test')
-const stringToStream = require('string-to-stream')
-const N3Parser = require('..')
+import { strictEqual } from 'assert'
+import sinkTest from '@rdfjs/sink/test/index.js'
+import { describe, it } from 'mocha'
+import { Readable } from 'readable-stream'
+import chunks from 'stream-chunks/chunks.js'
+import N3Parser from '../index.js'
 
 describe('@rdfjs/parser-n3', () => {
   sinkTest(N3Parser, { readable: true })
 
   describe('.import', () => {
     it('should parse the given string triple stream', async () => {
-      const nt = '<http://example.org/subject> <http://example.org/predicate> "object" .'
+      const nt = '[] <http://example.org/predicate> "object" .'
       const parser = new N3Parser()
 
-      const stream = parser.import(stringToStream(nt))
+      const stream = parser.import(Readable.from(nt))
 
-      const results = await getStream.array(stream)
+      const results = await chunks(stream)
       const quad = results[0]
 
-      strictEqual(quad.subject.termType, 'NamedNode')
-      strictEqual(quad.subject.value, 'http://example.org/subject')
+      strictEqual(quad.subject.termType, 'BlankNode')
 
       strictEqual(quad.predicate.termType, 'NamedNode')
       strictEqual(quad.predicate.value, 'http://example.org/predicate')
@@ -34,9 +33,9 @@ describe('@rdfjs/parser-n3', () => {
       const nt = '<http://example.org/subject> <http://example.org/predicate> "object" <http://example.org/graph> .'
       const parser = new N3Parser()
 
-      const stream = parser.import(stringToStream(nt))
+      const stream = parser.import(Readable.from(nt))
 
-      const results = await getStream.array(stream)
+      const results = await chunks(stream)
       const quad = results[0]
 
       strictEqual(quad.subject.termType, 'NamedNode')
@@ -62,13 +61,13 @@ describe('@rdfjs/parser-n3', () => {
       const parser = new N3Parser()
       const prefixes = {}
 
-      const stream = parser.import(stringToStream(nt))
+      const stream = parser.import(Readable.from(nt))
 
       stream.on('prefix', (prefix, namespace) => {
         prefixes[prefix] = namespace
       })
 
-      await getStream.array(stream)
+      await chunks(stream)
 
       strictEqual(typeof prefixes.p1, 'object')
       strictEqual(prefixes.p1.termType, 'NamedNode')
@@ -83,12 +82,12 @@ describe('@rdfjs/parser-n3', () => {
       const nt = '1'
       const parser = new N3Parser()
 
-      const stream = parser.import(stringToStream(nt))
+      const stream = parser.import(Readable.from(nt))
 
       let error = null
 
       try {
-        await getStream.array(stream)
+        await chunks(stream)
       } catch (err) {
         error = err
       }

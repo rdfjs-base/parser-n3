@@ -1,10 +1,11 @@
 {
   "name": "@rdfjs/parser-n3",
   "version": "1.1.4",
-  "description": "N3 parser that implements the RDFJS Sink interface",
+  "description": "N3 parser that implements the RDF/JS Sink interface",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "standard && mocha"
+    "test": "stricter-standard && c8 --reporter=lcov --reporter=text mocha"
   },
   "repository": {
     "type": "git",
@@ -25,16 +26,20 @@
   },
   "homepage": "https://github.com/rdfjs-base/parser-n3",
   "dependencies": {
-    "@rdfjs/data-model": "^1.0.1",
-    "@rdfjs/sink": "^1.0.2",
-    "n3": "^1.3.5",
-    "readable-stream": "^3.6.0",
-    "readable-to-readable": "^0.1.0"
+    "@rdfjs/data-model": "^2.0.1",
+    "@rdfjs/sink": "^2.0.0",
+    "duplex-to": "^2.0.0",
+    "n3": "^1.16.2",
+    "readable-stream": "^4.2.0"
+  },
+  "overrides": {
+    "readable-stream": "^4.2.0"
   },
   "devDependencies": {
-    "get-stream": "^5.1.0",
-    "mocha": "^7.1.1",
-    "standard": "^14.3.3",
-    "string-to-stream": "^3.0.1"
+    "assert": "^2.0.0",
+    "c8": "^7.12.0",
+    "mocha": "^10.0.0",
+    "stream-chunks": "^1.0.0",
+    "stricter-standard": "^0.2.0"
   }
 }
