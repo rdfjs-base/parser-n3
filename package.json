@@ -1,6 +1,6 @@
 {
   "name": "@rdfjs/parser-n3",
-  "version": "1.1.4",
+  "version": "2.0.0",
   "description": "N3 parser that implements the RDF/JS Sink interface",
   "type": "module",
   "main": "index.js",
