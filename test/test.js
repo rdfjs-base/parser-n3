@@ -96,7 +96,7 @@ describe('@rdfjs/parser-n3', () => {
       strictEqual(error.message.includes('literal'), true)
     })
 
-    it('should forward options to n3 parser', async () => {
+    it('should forward blankNodePrefix option to n3 parser', async () => {
       const nt = '<http://example.org/subject> <http://example.org/predicate> _:namedBlank .'
       const parser = new N3Parser()
 
