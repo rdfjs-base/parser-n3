@@ -1,5 +1,5 @@
 # @rdfjs/parser-n3
-[![build status](https://img.shields.io/github/workflow/status/rdfjs-base/parser-n3/Test)](https://github.com/rdfjs-base/parser-n3/actions/workflows/test.yaml)
+[![build status](https://img.shields.io/github/actions/workflow/status/rdfjs-base/parser-n3/test.yaml?branch=master)](https://github.com/rdfjs-base/parser-n3/actions/workflows/test.yaml)
 [![npm version](https://img.shields.io/npm/v/@rdfjs/parser-n3.svg)](https://www.npmjs.com/package/@rdfjs/parser-n3)
 
 N3 parser which implements the [RDF/JS Sink interface](http://rdf.js.org/) using the [N3.js](https://github.com/rdfjs/N3.js) library.
