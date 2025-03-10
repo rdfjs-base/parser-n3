@@ -29,6 +29,17 @@ describe('@rdfjs/parser-n3', () => {
       strictEqual(quad.graph.termType, 'DefaultGraph')
     })
 
+    it('should parse N3 rule with variable', async () => {
+      const n3 = '{ ?s a <http://example.org/Human> } => { ?s a <http://example.org/Mortal> } .'
+      const parser = new N3Parser({ format: 'text/n3' })
+
+      const stream = parser.import(Readable.from(n3))
+
+      const results = await chunks(stream)
+
+      strictEqual(results.length, 3)
+    })
+
     it('should parse the given string quad stream', async () => {
       const nt = '<http://example.org/subject> <http://example.org/predicate> "object" <http://example.org/graph> .'
       const parser = new N3Parser()
