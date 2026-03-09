@@ -29,7 +29,7 @@
     "@rdfjs/data-model": "^2.0.2",
     "@rdfjs/sink": "^2.0.1",
     "duplex-to": "^2.0.0",
-    "n3": "^1.17.2",
+    "n3": "^2.0.3",
     "readable-stream": "^4.5.2"
   },
   "devDependencies": {
