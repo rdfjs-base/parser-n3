@@ -117,5 +117,82 @@ describe('@rdfjs/parser-n3', () => {
 
       strictEqual(quad.object.value, 'namedBlank')
     })
+
+    it('should parse a literal with a base direction', async () => {
+      const nt = '<http://example.org/subject> <http://example.org/predicate> "object"@en--ltr .'
+      const parser = new N3Parser()
+
+      const stream = parser.import(Readable.from(nt))
+
+      const [quad] = await chunks(stream)
+
+      strictEqual(quad.object.termType, 'Literal')
+      strictEqual(quad.object.value, 'object')
+      strictEqual(quad.object.language, 'en')
+      strictEqual(quad.object.direction, 'ltr')
+    })
+
+    it('should parse a triple term in the object position', async () => {
+      const nt = '<http://example.org/subject> <http://example.org/predicate> <<(<http://example.org/s1> <http://example.org/p1> <http://example.org/o1>)>> .'
+      const parser = new N3Parser()
+
+      const stream = parser.import(Readable.from(nt))
+
+      const results = await chunks(stream)
+      strictEqual(results.length, 1)
+
+      const [quad] = results
+
+      strictEqual(quad.object.termType, 'Quad')
+      strictEqual(quad.object.subject.value, 'http://example.org/s1')
+      strictEqual(quad.object.predicate.value, 'http://example.org/p1')
+      strictEqual(quad.object.object.value, 'http://example.org/o1')
+    })
+
+    it('should parse a reified triple with an implicit reifier as subject', async () => {
+      const nt = '<<<http://example.org/s1> <http://example.org/p1> <http://example.org/o1>>> <http://example.org/predicate> <http://example.org/object> .'
+      const parser = new N3Parser()
+
+      const stream = parser.import(Readable.from(nt))
+
+      const results = await chunks(stream)
+      strictEqual(results.length, 2)
+
+      const [statement, reifies] = results.sort((a, b) => a.predicate.value < b.predicate.value ? -1 : 1)
+
+      strictEqual(reifies.subject.termType, 'BlankNode')
+      strictEqual(reifies.predicate.value, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies')
+      strictEqual(reifies.object.termType, 'Quad')
+      strictEqual(reifies.object.subject.value, 'http://example.org/s1')
+      strictEqual(reifies.object.predicate.value, 'http://example.org/p1')
+      strictEqual(reifies.object.object.value, 'http://example.org/o1')
+
+      strictEqual(statement.subject.termType, 'BlankNode')
+      strictEqual(statement.subject.value, reifies.subject.value)
+      strictEqual(statement.predicate.value, 'http://example.org/predicate')
+      strictEqual(statement.object.value, 'http://example.org/object')
+    })
+
+    it('should parse a reified triple with an explicit reifier as subject', async () => {
+      const nt = '<<<http://example.org/s1> <http://example.org/p1> <http://example.org/o1> ~ <http://example.org/id>>> <http://example.org/predicate> <http://example.org/object> .'
+      const parser = new N3Parser()
+
+      const stream = parser.import(Readable.from(nt))
+
+      const results = await chunks(stream)
+      strictEqual(results.length, 2)
+
+      const [statement, reifies] = results.sort((a, b) => a.predicate.value < b.predicate.value ? -1 : 1)
+
+      strictEqual(reifies.subject.termType, 'NamedNode')
+      strictEqual(reifies.subject.value, 'http://example.org/id')
+      strictEqual(reifies.predicate.value, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies')
+      strictEqual(reifies.object.termType, 'Quad')
+      strictEqual(reifies.object.subject.value, 'http://example.org/s1')
+
+      strictEqual(statement.subject.value, 'http://example.org/id')
+      strictEqual(statement.predicate.value, 'http://example.org/predicate')
+      strictEqual(statement.object.value, 'http://example.org/object')
+    })
   })
 })
